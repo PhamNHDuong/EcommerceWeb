@@ -1,9 +1,19 @@
+using AutoMapper;
+using EcommerceWeb.Data;
+using EcommerceWeb.Data.Config;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
+
+var config = new MapperConfiguration(cfg =>
+{
+    cfg.AddProfile(new MappingProfile());
+});
+var mapper = config.CreateMapper();
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())

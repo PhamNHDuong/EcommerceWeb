@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace EcommerceWeb.Data.Models
 {
-    public class Categories : AuditableEntity
+    public class Category : AuditableEntity
     {
         [Key]
         public Guid CategoryId { get; set; }

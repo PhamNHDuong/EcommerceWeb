@@ -1,7 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
-using NashTechAssignment.Data;
+﻿using EcommerceWeb.Data.DatabaseContext;
+using EcommerceWeb.Data.Models;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 
-namespace EcommerceWeb.Data.Models
+namespace EcommerceWeb.Data
 {
     public class SeedData
     {

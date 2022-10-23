@@ -10,10 +10,13 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EcommerceWeb.AdminSite", "EcommerceWeb.AdminSite\EcommerceWeb.AdminSite.csproj", "{145354E2-7469-4D2E-88F8-34D27EACED18}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EcommerceWeb.Data", "EcommerceWeb.Data\EcommerceWeb.Data.csproj", "{F892DA25-4325-4671-AB85-473DC36B3D0B}"
+	ProjectSection(ProjectDependencies) = postProject
+		{9172F48B-4664-4547-A647-A0BA81F54CBE} = {9172F48B-4664-4547-A647-A0BA81F54CBE}
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EcommerceWeb.Dto", "EcommerceWeb.Dto\EcommerceWeb.Dto.csproj", "{9172F48B-4664-4547-A647-A0BA81F54CBE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EcommerceWeb.API.Tests", "EcommerceWeb.API.Tests\EcommerceWeb.API.Tests.csproj", "{28AB4CF9-6337-45CD-AB08-741850D08A14}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EcommerceWeb.API.Tests", "EcommerceWeb.API.Tests\EcommerceWeb.API.Tests.csproj", "{28AB4CF9-6337-45CD-AB08-741850D08A14}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

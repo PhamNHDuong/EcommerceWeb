@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using EcommerceWeb.Data.Models;
 
-namespace NashTechAssignment.Data
+namespace EcommerceWeb.Data.DatabaseContext
 {
     public class ApplicationDbContext : DbContext
     {
@@ -12,7 +12,7 @@ namespace NashTechAssignment.Data
         public DbSet<Order> Orders { get; set; }
         public DbSet<Cart> Carts { get; set; }
         public DbSet<CartItem> CartItems { get; set; }
-        public DbSet<Categories> Categories { get; set; }
+        public DbSet<Category> Categories { get; set; }
         public DbSet<Rating> Ratings { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<UserInfo> userInfos { get; set; }
@@ -32,7 +32,7 @@ namespace NashTechAssignment.Data
             foreach (var entityEntry in entries)
             {
                 // If the entity state is Added let's set
-                // the CreatedAt and CreatedBy properties
+                // the DateCreated properties
                 if (entityEntry.State == EntityState.Added)
                 {
                     ((AuditableEntity)entityEntry.Entity).DateCreated = DateTime.UtcNow;
@@ -40,13 +40,13 @@ namespace NashTechAssignment.Data
                 else
                 {
                     // If the state is Modified then we don't want
-                    // to modify the CreatedAt and CreatedBy properties
+                    // to modify the properties
                     // so we set their state as IsModified to false
                     Entry((AuditableEntity)entityEntry.Entity).Property(p => p.DateCreated).IsModified = false;
                 }
 
                 // In any case we always want to set the properties
-                // ModifiedAt and ModifiedBy
+                // DateUpdated
                 ((AuditableEntity)entityEntry.Entity).DateUpdated = DateTime.UtcNow;
             }
 

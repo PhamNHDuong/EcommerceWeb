@@ -1,3 +1,4 @@
+using EcommerceWeb.Data.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EcommerceWeb.API.Controllers
@@ -28,6 +29,12 @@ namespace EcommerceWeb.API.Controllers
                 Summary = Summaries[Random.Shared.Next(Summaries.Length)]
             })
             .ToArray();
+        }
+
+        [HttpGet(Name = "GetProduct")]
+        public IEnumerable<Product> GetApiAsync()
+        {
+            return null;
         }
     }
 }
