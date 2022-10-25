@@ -1,4 +1,4 @@
-﻿using EcommerceWeb.Data.Models;
+﻿using EcommerceWeb.Data.Entities;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EcommerceWeb.CustomerSite.Controllers
