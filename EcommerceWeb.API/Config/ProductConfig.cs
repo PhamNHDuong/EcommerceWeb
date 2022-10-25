@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using EcommerceWeb.Data.Models;
+using EcommerceWeb.Data.Entities;
 using EcommerceWeb.Dto.Models;
 using System.Collections.Generic;
 using System.Globalization;

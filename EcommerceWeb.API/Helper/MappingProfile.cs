@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
-using EcommerceWeb.Data.Models;
+using EcommerceWeb.Data.Entities;
 using EcommerceWeb.Dto.Models;
 
 namespace EcommerceWeb.API.Helper
