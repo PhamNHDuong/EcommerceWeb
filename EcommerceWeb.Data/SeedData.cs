@@ -1,5 +1,5 @@
 ﻿using EcommerceWeb.Data.DatabaseContext;
-using EcommerceWeb.Data.Models;
+using EcommerceWeb.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -23,7 +23,6 @@ namespace EcommerceWeb.Data
                     new Product
                     {
                         ProductId = Guid.NewGuid(),
-                        CategoryId = Guid.NewGuid(),
                         Name = "Game2",
                         Description = "Test2",
                         Price = 2.6,
@@ -36,7 +35,6 @@ namespace EcommerceWeb.Data
                     new Product
                     {
                         ProductId = Guid.NewGuid(),
-                        CategoryId = Guid.NewGuid(),
                         Name = "Game1",
                         Description = "Test",
                         Price = 1.6,
@@ -49,7 +47,6 @@ namespace EcommerceWeb.Data
                     new Product
                     {
                         ProductId = Guid.NewGuid(),
-                        CategoryId = Guid.NewGuid(),
                         Name = "Game3",
                         Description = "Test3",
                         Price = 1.6,
@@ -62,7 +59,6 @@ namespace EcommerceWeb.Data
                     new Product
                     {
                         ProductId = Guid.NewGuid(),
-                        CategoryId = Guid.NewGuid(),
                         Name = "Game4",
                         Description = "Test4",
                         Price = 1.6,

@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 
-namespace EcommerceWeb.Data.Models
+namespace EcommerceWeb.Data.Entities
 {
     public class Rating
     {

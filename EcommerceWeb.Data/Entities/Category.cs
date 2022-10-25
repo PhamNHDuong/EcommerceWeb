@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 
-namespace EcommerceWeb.Data.Models
+namespace EcommerceWeb.Data.Entities
 {
     public class Category : AuditableEntity
     {
@@ -14,5 +14,7 @@ namespace EcommerceWeb.Data.Models
 
         [Required]
         public string Description { get; set; }
+
+        public virtual ICollection<Product> Products { get; set; }
     }
 }

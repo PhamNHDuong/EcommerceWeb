@@ -3,15 +3,12 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Reflection.Metadata;
 
-namespace EcommerceWeb.Data.Models
+namespace EcommerceWeb.Data.Entities
 {
     public class Product : AuditableEntity
     {
         [Key]
         public Guid ProductId { get; set; }
-
-        [ForeignKey("Categories")]
-        public Guid CategoryId { get; set; }
 
         [Required]
         [StringLength(50)]
@@ -29,5 +26,8 @@ namespace EcommerceWeb.Data.Models
 
         [Required]
         public int Stock { get; set; }
+
+        public virtual ICollection<Category> Categories { get; set; }
+
     }
 }

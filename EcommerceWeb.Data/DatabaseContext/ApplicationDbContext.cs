@@ -1,13 +1,17 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using EcommerceWeb.Data.Models;
+using EcommerceWeb.Data.Entities;
+using System.Configuration;
 
 namespace EcommerceWeb.Data.DatabaseContext
 {
     public class ApplicationDbContext : DbContext
     {
+        public const string ConnectionString = @"Data Source=CAT;Initial Catalog=RookieAssignment;Integrated Security=True";
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
+
         }
+
         public DbSet<Product> Products { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<Cart> Carts { get; set; }
@@ -58,6 +62,7 @@ namespace EcommerceWeb.Data.DatabaseContext
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
+            optionsBuilder.UseSqlServer(ConnectionString);
             base.OnConfiguring(optionsBuilder);
         }
 

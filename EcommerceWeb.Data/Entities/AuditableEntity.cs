@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace EcommerceWeb.Data.Models
+namespace EcommerceWeb.Data.Entities
 {
     public class AuditableEntity
     {

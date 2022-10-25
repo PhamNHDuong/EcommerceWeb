@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace EcommerceWeb.Data.Models
+namespace EcommerceWeb.Data.Entities
 {
     public class CartItem
     {
