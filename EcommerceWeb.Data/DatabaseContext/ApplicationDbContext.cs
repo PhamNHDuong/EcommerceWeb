@@ -6,10 +6,8 @@ namespace EcommerceWeb.Data.DatabaseContext
 {
     public class ApplicationDbContext : DbContext
     {
-        public const string ConnectionString = @"Data Source=CAT;Initial Catalog=RookieAssignment;Integrated Security=True";
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
-
         }
 
         public DbSet<Product> Products { get; set; }
@@ -62,7 +60,6 @@ namespace EcommerceWeb.Data.DatabaseContext
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer(ConnectionString);
             base.OnConfiguring(optionsBuilder);
         }
 
