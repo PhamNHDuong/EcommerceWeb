@@ -1,4 +1,8 @@
 ﻿using EcommerceWeb.CustomerSite.Models;
+using EcommerceWeb.CustomerSite.Services;
+using EcommerceWeb.CustomerSite.Services.Interfaces;
+using EcommerceWeb.CustomerSite.Utilities;
+using EcommerceWeb.Dto.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
@@ -6,16 +10,21 @@ namespace EcommerceWeb.CustomerSite.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
-
-        public HomeController(ILogger<HomeController> logger)
-        {
-            _logger = logger;
-        }
-
         public IActionResult Index()
         {
-            return View();
+            //ProductListReadDto data = await _productService.GetFeaturedProductData(ConstantVariable.DEFAULT_PAGE_NUMBER, ConstantVariable.DEFAULT_SIZE_PER_PAGE);
+
+            //if (data is null)
+            //{
+            //    return RedirectToAction("Index", "Error");
+            //}
+
+            //var vm = new HomeViewModel()
+            //{
+            //    Products = data.Products
+            //};
+
+            return View(/*vm*/);
         }
 
         public IActionResult Privacy()

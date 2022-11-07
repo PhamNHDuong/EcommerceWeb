@@ -1,18 +1,42 @@
 using AutoMapper;
+using EcommerceWeb.CustomerSite.Services;
+using EcommerceWeb.CustomerSite.Services.Interfaces;
+using EcommerceWeb.CustomerSite.Utilities;
 using EcommerceWeb.Data;
+using EcommerceWeb.Data.DatabaseContext;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Routing.Template;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Net.Http.Headers;
+using Refit;
+using System.Web.Http;
+using Microsoft.AspNetCore.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddRazorPages();
 
+builder.Services
+    .AddRefitClient<IData>()
+    .ConfigureHttpClient(op => op.BaseAddress = new Uri(builder.Configuration["APIUri"]));
+   
+
+builder.Services.AddSession(op =>
+{
+    op.IdleTimeout = TimeSpan.FromMinutes(10);
+});
+
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(opt =>
+    {
+        opt.LoginPath = "/Auth/Login";
+    });
+
+//builder.Services.AddDbContext<ApplicationDbContext>(
+//    options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 var app = builder.Build();
-
-//var config = new MapperConfiguration(cfg =>
-//{
-//    cfg.AddProfile(new MappingProfile();
-//});
-//var mapper = config.CreateMapper();
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
@@ -27,10 +51,21 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+
+app.MapRazorPages();
+
+app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapControllerRoute(
+        name: "Default",
+        pattern: "{controller=Products}/{action=Index}/{id?}");
+});
 
+
+//app.MapControllerRoute(
+//       name: "Default",
+//       pattern: "{controller=Products}/{action=Index}/{id?}");
 app.Run();
