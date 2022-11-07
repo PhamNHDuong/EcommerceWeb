@@ -34,8 +34,7 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
         opt.LoginPath = "/Auth/Login";
     });
 
-//builder.Services.AddDbContext<ApplicationDbContext>(
-//    options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -65,7 +64,4 @@ app.UseEndpoints(endpoints =>
 });
 
 
-//app.MapControllerRoute(
-//       name: "Default",
-//       pattern: "{controller=Products}/{action=Index}/{id?}");
 app.Run();

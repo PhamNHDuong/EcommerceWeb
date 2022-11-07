@@ -1,21 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using EcommerceWeb.Data.DatabaseContext;
-using EcommerceWeb.Data.Entities;
-using Newtonsoft.Json;
 using EcommerceWeb.CustomerSite.Utilities;
-using NuGet.Protocol;
 using Microsoft.AspNetCore.Authorization;
-using System.Xml.Linq;
-using EcommerceWeb.CustomerSite.Services.Interfaces;
 using EcommerceWeb.Dto.Models;
 using Refit;
-using Microsoft.TeamFoundation.Common;
 
 namespace EcommerceWeb.CustomerSite.Controllers
 {
