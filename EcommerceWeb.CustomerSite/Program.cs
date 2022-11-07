@@ -1,16 +1,6 @@
-using AutoMapper;
-using EcommerceWeb.CustomerSite.Services;
-using EcommerceWeb.CustomerSite.Services.Interfaces;
 using EcommerceWeb.CustomerSite.Utilities;
-using EcommerceWeb.Data;
-using EcommerceWeb.Data.DatabaseContext;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Routing.Template;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Net.Http.Headers;
 using Refit;
-using System.Web.Http;
-using Microsoft.AspNetCore.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 
