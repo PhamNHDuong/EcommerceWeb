@@ -8,13 +8,22 @@ namespace EcommerceWeb.Data.Entities
         [Key]
         public Guid RateId { get; set; }
 
-        [ForeignKey("Product")]
-        public Guid ProductId { get; set; }
+        public RatingStar Star { get; set; }
+        public string Comment { get; set; }
 
-        public User UsersRating { get; set; }
+        [ForeignKey("UserId")]
+        public virtual User User { get; set; }
 
-        [DisplayFormat(DataFormatString = "{0:#.##}")]
-        [Required]
-        public double Rate { get; set; }
+        [ForeignKey("ProductId")]
+        public virtual Product Product { get; set; }
+    }
+
+    public enum RatingStar
+    {
+        VeryUnsatisfied = 1,
+        Unsatisfied,
+        Neutral,
+        Satisfied,
+        VerySatisfied
     }
 }

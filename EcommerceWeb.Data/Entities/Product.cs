@@ -26,8 +26,12 @@ namespace EcommerceWeb.Data.Entities
 
         [Required]
         public int Stock { get; set; }
+        [Required]
+        public bool IsDeleted { get; set; }
 
-        public virtual ICollection<Category> Categories { get; set; }
+        public virtual Category Category { get; set; }
+
+        public virtual ICollection<ProductImage> ProductImages { get; set; }
 
     }
 }
