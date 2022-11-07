@@ -1,0 +1,156 @@
+﻿@using EcommerceWeb.Dto.Models
+
+@model ViewListDto<ProductDto>
+
+@{
+    ViewData["Title"] = "Search";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var Type = ViewData["SearchType"];
+    var Name = ViewData["SearchName"] as string;
+}
+
+<h1>Index</h1>
+
+<div class="container-fluid">
+    <div>
+
+        <form asp-action="Search" asp-controller="Products">
+            <div class="input-group">
+                <select value=@Type name="searchType" class="form-control" asp-items="@ViewBag.Category">
+                    <option value="">Categories</option>
+                </select>
+                <input value=@Name placeholder="Search products by name" class="form-control" type="text" name="searchName" />
+                <button class="form-control btn-outline-primary">Search</button>
+                <a asp-action="Index" class="btn btn-primary">Show all</a>
+            </div>
+        </form>
+    </div>
+    <div class="row">
+        <div class="container">
+            <div class="row">
+                @*<div class="col-3 d-inline-block">Sidebar</div>*@
+                <div class="col-12 d-inline-flex flex-wrap justify-content-start">
+                    @foreach (var item in Model.ModelDatas)
+                    {
+                        <div class="card col-md-3 me-1">
+                            @*<img src=@item.ImgUrls.First() class="card-img-top" alt="...">*@
+                            <div class="card-body">
+                                <h5 class="card-title">@item.Name</h5>
+                                <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                                <a asp-action="Details" asp-route-id="@item.ProductId" class="btn btn-primary">Details</a>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+            <div class="row">
+                <nav class="d-flex justify-content-end" aria-label="...">
+                    <ul class="pagination">
+                        @if (Model.MaxPage > 1 && Model.PageIndex != 1)
+                        {
+                            <li class="page-item">
+                                @Html.ActionLink("Previous", "Index", "Products",new {pageIndex = Model.PageIndex - 1}, new {@class = "page-link"})
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="page-item disabled">
+                                @Html.ActionLink("Previous", "Index", "Products",new {pageIndex = 1}, new {@class = "page-link"})
+                            </li>
+                        }
+                        @{
+                            if (Model.MaxPage <= 3)
+                            {
+                                for (int i = 1; i <= Model.MaxPage; i++)
+                                {
+                                    if (i == Model.PageIndex)
+                                    {
+                                        <li class="page-item active" aria-current="page">
+                                            @Html.ActionLink(i.ToString(), "Index", "Products",new {pageIndex = i}, new {@class = "page-link"})
+                                        </li>
+                                    }
+                                    else
+                                    {
+                                        <li class="page-item" aria-current="page">
+                                            @Html.ActionLink(i.ToString(), "Index", "Products",new {pageIndex = i}, new {@class = "page-link"})
+                                        </li>
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                if (Model.PageIndex == 1)
+                                {
+                                    for (int i = Model.PageIndex; i <= 3; i++)
+                                    {
+                                        if (i == Model.PageIndex)
+                                        {
+                                            <li class="page-item active" aria-current="page">
+                                                @Html.ActionLink(i.ToString(), "Index", "Products",new {pageIndex = i}, new {@class = "page-link"})
+                                            </li>
+                                        }
+                                        else
+                                        {
+                                            <li class="page-item" aria-current="page">
+                                                @Html.ActionLink(i.ToString(), "Index", "Products",new {pageIndex = i}, new {@class = "page-link"})
+                                            </li>
+                                        }
+                                    }
+                                }
+                                else if (Model.PageIndex == Model.MaxPage)
+                                {
+                                    for (int i = Model.PageIndex - 2; i <= Model.MaxPage; i++)
+                                    {
+                                        if (i == Model.PageIndex)
+                                        {
+                                            <li class="page-item active" aria-current="page">
+                                                @Html.ActionLink(i.ToString(), "Index", "Products",new {pageIndex = i}, new {@class = "page-link"})
+                                            </li>
+                                        }
+                                        else
+                                        {
+                                            <li class="page-item" aria-current="page">
+                                                @Html.ActionLink(i.ToString(), "Index", "Products",new {pageIndex = i}, new {@class = "page-link"})
+                                            </li>
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    for (int i = Model.PageIndex - 1; i <= Model.PageIndex + 1; i++)
+                                    {
+                                        if (i == Model.PageIndex)
+                                        {
+                                            <li class="page-item active" aria-current="page">
+                                                @Html.ActionLink(i.ToString(), "Index", "Products",new {pageIndex = i}, new {@class = "page-link"})
+                                            </li>
+                                        }
+                                        else
+                                        {
+                                            <li class="page-item" aria-current="page">
+                                                @Html.ActionLink(i.ToString(), "Index", "Products",new {pageIndex = i}, new {@class = "page-link"})
+                                            </li>
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        @if (Model.PageIndex != Model.MaxPage)
+                        {
+                            <li class="page-item">
+                                @Html.ActionLink("Next", "Index", "Products",new {pageIndex = Model.PageIndex + 1}, new {@class = "page-link"})
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="page-item disabled">
+                                @Html.ActionLink("Next", "Index", "Products",new {pageIndex = 1}, new {@class = "page-link"})
+                            </li>
+                        }
+                    </ul>
+                </nav>
+            </div>
+        </div>
+
+    </div>
+</div>
