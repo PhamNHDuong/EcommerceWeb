@@ -12,6 +12,8 @@ namespace EcommerceWeb.Data.Entities
         [StringLength(50)]
         public string Name { get; set; }
 
-        public virtual ICollection<Product> Products { get; set; }
+        public bool IsDeleted { get; set; } = false;
+
+        public virtual ICollection<Product>? Products { get; set; }
     }
 }

@@ -11,10 +11,9 @@ namespace EcommerceWeb.Data.Entities
         public RatingStar Star { get; set; }
         public string Comment { get; set; }
 
-        [ForeignKey("UserId")]
-        public virtual User User { get; set; }
-
-        [ForeignKey("ProductId")]
+        //[ForeignKey("UserId")]
+        //public virtual User User { get; set; }
+        public virtual AUser AUser { get; set; }
         public virtual Product Product { get; set; }
     }
 

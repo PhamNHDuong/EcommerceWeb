@@ -6,12 +6,11 @@ namespace EcommerceWeb.Data.Entities
     public class ProductImage
     {
         [Key]
-        public int Id { get; set; }
+        public Guid ImageId { get; set; }
 
-        [ForeignKey("Product")]
-        public virtual Product Products { get; set; }
+        public virtual Product Product { get; set; }
 
-        public string? Image { get; set; }
+        public byte[]? ImageBin { get; set; }
         public string? Alt { get; set; }
     }
 }

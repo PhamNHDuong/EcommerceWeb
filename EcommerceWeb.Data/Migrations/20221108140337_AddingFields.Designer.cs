@@ -4,6 +4,7 @@ using EcommerceWeb.Data.DatabaseContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EcommerceWeb.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20221108140337_AddingFields")]
+    partial class AddingFields
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -55,7 +57,7 @@ namespace EcommerceWeb.Data.Migrations
 
                     b.HasKey("AUserId");
 
-                    b.ToTable("AUser", (string)null);
+                    b.ToTable("AUser");
                 });
 
             modelBuilder.Entity("EcommerceWeb.Data.Entities.Category", b =>
@@ -80,7 +82,7 @@ namespace EcommerceWeb.Data.Migrations
 
                     b.HasKey("CategoryId");
 
-                    b.ToTable("Categories", (string)null);
+                    b.ToTable("Categories");
                 });
 
             modelBuilder.Entity("EcommerceWeb.Data.Entities.Order", b =>
@@ -106,7 +108,7 @@ namespace EcommerceWeb.Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Orders", (string)null);
+                    b.ToTable("Orders");
                 });
 
             modelBuilder.Entity("EcommerceWeb.Data.Entities.OrderDetail", b =>
@@ -133,7 +135,7 @@ namespace EcommerceWeb.Data.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("OrderDetails", (string)null);
+                    b.ToTable("OrderDetails");
                 });
 
             modelBuilder.Entity("EcommerceWeb.Data.Entities.Product", b =>
@@ -173,29 +175,31 @@ namespace EcommerceWeb.Data.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.ToTable("Products", (string)null);
+                    b.ToTable("Products");
                 });
 
             modelBuilder.Entity("EcommerceWeb.Data.Entities.ProductImage", b =>
                 {
-                    b.Property<Guid>("ImageId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<string>("Alt")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<byte[]>("ImageBin")
-                        .HasColumnType("varbinary(max)");
+                    b.Property<string>("Image")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("ProductId")
+                    b.Property<Guid>("Product")
                         .HasColumnType("uniqueidentifier");
 
-                    b.HasKey("ImageId");
+                    b.HasKey("Id");
 
-                    b.HasIndex("ProductId");
+                    b.HasIndex("Product");
 
-                    b.ToTable("productImages", (string)null);
+                    b.ToTable("productImages");
                 });
 
             modelBuilder.Entity("EcommerceWeb.Data.Entities.Rating", b =>
@@ -217,13 +221,19 @@ namespace EcommerceWeb.Data.Migrations
                     b.Property<int>("Star")
                         .HasColumnType("int");
 
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
                     b.HasKey("RateId");
 
                     b.HasIndex("AUserId");
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("Ratings", (string)null);
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Ratings");
                 });
 
             modelBuilder.Entity("EcommerceWeb.Data.Entities.User", b =>
@@ -321,7 +331,7 @@ namespace EcommerceWeb.Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("userInfos", (string)null);
+                    b.ToTable("userInfos");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -500,13 +510,13 @@ namespace EcommerceWeb.Data.Migrations
 
             modelBuilder.Entity("EcommerceWeb.Data.Entities.ProductImage", b =>
                 {
-                    b.HasOne("EcommerceWeb.Data.Entities.Product", "Product")
+                    b.HasOne("EcommerceWeb.Data.Entities.Product", "Products")
                         .WithMany("ProductImages")
-                        .HasForeignKey("ProductId")
+                        .HasForeignKey("Product")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Product");
+                    b.Navigation("Products");
                 });
 
             modelBuilder.Entity("EcommerceWeb.Data.Entities.Rating", b =>
@@ -518,14 +528,22 @@ namespace EcommerceWeb.Data.Migrations
                         .IsRequired();
 
                     b.HasOne("EcommerceWeb.Data.Entities.Product", "Product")
-                        .WithMany("Ratings")
+                        .WithMany()
                         .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("EcommerceWeb.Data.Entities.User", "User")
+                        .WithMany("Ratings")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("AUser");
 
                     b.Navigation("Product");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("EcommerceWeb.Data.Entities.UserInfo", b =>
@@ -603,7 +621,10 @@ namespace EcommerceWeb.Data.Migrations
             modelBuilder.Entity("EcommerceWeb.Data.Entities.Product", b =>
                 {
                     b.Navigation("ProductImages");
+                });
 
+            modelBuilder.Entity("EcommerceWeb.Data.Entities.User", b =>
+                {
                     b.Navigation("Ratings");
                 });
 #pragma warning restore 612, 618

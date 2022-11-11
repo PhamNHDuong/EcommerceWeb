@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Reflection.Metadata;
@@ -22,16 +24,14 @@ namespace EcommerceWeb.Data.Entities
         public double Price { get; set; }
 
         [Required]
-        public bool InStock { get; set; }
-
-        [Required]
         public int Stock { get; set; }
         [Required]
-        public bool IsDeleted { get; set; }
+        public bool IsDeleted { get; set; } = false;
 
         public virtual Category Category { get; set; }
 
-        public virtual ICollection<ProductImage> ProductImages { get; set; }
+        public virtual ICollection<ProductImage>? ProductImages { get; set; }
 
-    }
+        public virtual ICollection<Rating> Ratings { get; set; }
+    }   
 }

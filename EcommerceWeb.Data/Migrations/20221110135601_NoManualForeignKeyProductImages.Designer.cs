@@ -4,6 +4,7 @@ using EcommerceWeb.Data.DatabaseContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EcommerceWeb.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20221110135601_NoManualForeignKeyProductImages")]
+    partial class NoManualForeignKeyProductImages
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -55,7 +57,7 @@ namespace EcommerceWeb.Data.Migrations
 
                     b.HasKey("AUserId");
 
-                    b.ToTable("AUser", (string)null);
+                    b.ToTable("AUser");
                 });
 
             modelBuilder.Entity("EcommerceWeb.Data.Entities.Category", b =>
@@ -80,7 +82,7 @@ namespace EcommerceWeb.Data.Migrations
 
                     b.HasKey("CategoryId");
 
-                    b.ToTable("Categories", (string)null);
+                    b.ToTable("Categories");
                 });
 
             modelBuilder.Entity("EcommerceWeb.Data.Entities.Order", b =>
@@ -106,7 +108,7 @@ namespace EcommerceWeb.Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Orders", (string)null);
+                    b.ToTable("Orders");
                 });
 
             modelBuilder.Entity("EcommerceWeb.Data.Entities.OrderDetail", b =>
@@ -133,7 +135,7 @@ namespace EcommerceWeb.Data.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("OrderDetails", (string)null);
+                    b.ToTable("OrderDetails");
                 });
 
             modelBuilder.Entity("EcommerceWeb.Data.Entities.Product", b =>
@@ -173,7 +175,7 @@ namespace EcommerceWeb.Data.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.ToTable("Products", (string)null);
+                    b.ToTable("Products");
                 });
 
             modelBuilder.Entity("EcommerceWeb.Data.Entities.ProductImage", b =>
@@ -195,7 +197,7 @@ namespace EcommerceWeb.Data.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("productImages", (string)null);
+                    b.ToTable("productImages");
                 });
 
             modelBuilder.Entity("EcommerceWeb.Data.Entities.Rating", b =>
@@ -223,7 +225,7 @@ namespace EcommerceWeb.Data.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("Ratings", (string)null);
+                    b.ToTable("Ratings");
                 });
 
             modelBuilder.Entity("EcommerceWeb.Data.Entities.User", b =>
@@ -321,7 +323,7 @@ namespace EcommerceWeb.Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("userInfos", (string)null);
+                    b.ToTable("userInfos");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>

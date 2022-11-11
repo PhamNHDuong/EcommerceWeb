@@ -4,6 +4,6 @@ namespace EcommerceWeb.Data.Entities
 {
     public class User : IdentityUser
     {
-        public virtual List<Rating> Ratings { get; set; }
+        //public virtual List<Rating> Ratings { get; set; }
     }
 }
