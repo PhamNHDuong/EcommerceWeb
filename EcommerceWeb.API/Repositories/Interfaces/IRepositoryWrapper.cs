@@ -5,8 +5,10 @@
         IProductRepository Product { get; }
         ICategoryRepository Category { get; }
         IRatingRepository Rating { get; }
-        IUserRepository Authenication { get; }
+        IUserRepository User { get; }
+        IImageRepository Image { get; }
         Task SaveAsync();
 
+        Task Dispose();
     }
 }

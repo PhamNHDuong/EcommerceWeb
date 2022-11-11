@@ -2,7 +2,7 @@
 
 namespace EcommerceWeb.API.Repositories.Interfaces
 {
-    public interface IUserRepository : IGenericRepository<AUser>
+    public interface IImageRepository : IGenericRepository<ProductImage>
     {
     }
 }

@@ -1,5 +1,7 @@
 ﻿using EcommerceWeb.API.Repositories.Interfaces;
 using EcommerceWeb.Data.DatabaseContext;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.VisualStudio.Services.Identity;
 
 namespace EcommerceWeb.API.Repositories
 {
@@ -8,8 +10,9 @@ namespace EcommerceWeb.API.Repositories
         private ApplicationDbContext _context;
         private IProductRepository _product;
         private ICategoryRepository _category;
-        private IUserRepository _authenication;
+        private IUserRepository _user;
         private IRatingRepository _rating;
+        private IImageRepository _image;
         public RepositoryWrapper(ApplicationDbContext context)
         {
             _context = context;
@@ -37,15 +40,15 @@ namespace EcommerceWeb.API.Repositories
                 return _category;
             }
         }
-        public IUserRepository Authenication
+        public IUserRepository User
         {
             get
             {
-                if (_authenication == null)
+                if (_user == null)
                 {
-                    _authenication = new UserRepository(_context);
+                    _user = new UserRepository(_context);
                 }
-                return _authenication;
+                return _user;
             }
         }        
         public IRatingRepository Rating
@@ -59,9 +62,48 @@ namespace EcommerceWeb.API.Repositories
             return _rating;
             }
         }
+        public IImageRepository Image
+        {
+            get
+            {
+                if (_image == null)
+                {
+                    _image = new ImageRepository(_context);
+                }
+                return _image;
+            }
+        }
         public async Task SaveAsync()
         {
             await _context.SaveChangesAsync();
+        }
+
+        private bool disposed = false;
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!this.disposed)
+            {
+                if (disposing)
+                {
+                    _context.Dispose();
+                }
+            }
+            this.disposed = true;
+        }
+
+        public Task Dispose()
+        {
+            try
+            {
+                Dispose(true);
+                GC.SuppressFinalize(this);
+            }
+            catch(Exception err)
+            {
+                return Task.FromException(err);
+            }
+            return Task.CompletedTask;
         }
     }
 }

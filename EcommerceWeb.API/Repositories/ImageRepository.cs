@@ -4,8 +4,9 @@ using EcommerceWeb.Data.Entities;
 
 namespace EcommerceWeb.API.Repositories
 {
-    public class UserRepository : GenericRepository<AUser>, IUserRepository
+    public class ImageRepository : GenericRepository<ProductImage>, IImageRepository
     {
-        public UserRepository(ApplicationDbContext context) : base(context) { }
+        public ImageRepository(ApplicationDbContext context) : base(context) { }
+
     }
 }

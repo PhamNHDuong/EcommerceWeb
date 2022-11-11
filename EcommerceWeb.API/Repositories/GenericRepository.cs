@@ -3,6 +3,7 @@ using EcommerceWeb.Data.DatabaseContext;
 using EcommerceWeb.Dto.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
+using Microsoft.VisualStudio.Services.Organization.Client;
 using System.Linq.Expressions;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
@@ -25,6 +26,10 @@ namespace EcommerceWeb.API.Repositories
         {
             return _context.Set<T>().FirstOrDefaultAsync(expression);
         }
+        public Task<T> GetByAsync(Expression<Func<T, bool>> expression, Expression<Func<T, object>> includes)
+        {
+            return _context.Set<T>().Include(includes).FirstOrDefaultAsync(expression);
+        }
 
         public IQueryable<T> GetMany(Expression<Func<T, bool>> expression)
         {
@@ -36,19 +41,33 @@ namespace EcommerceWeb.API.Repositories
             return includes.Aggregate(query, (current, includeProperty) => current.Include(includeProperty));
         }
 
-        public async Task SaveAsync(T entity)
+        public async Task InsertAsync(T entity)
         {
-            _context.Set<T>().AddAsync(entity);
+            await _context.Set<T>().AddAsync(entity);
         }
-
         public Task UpdateAsync(T entity)
         {
-            throw new NotImplementedException();
+            try
+            {
+                _context.Set<T>().Attach(entity);
+                _context.Entry(entity).State = EntityState.Modified;
+            }
+            catch (Exception err)
+            {
+                return Task.FromException(err);
+            }
+            return Task.CompletedTask;
         }
 
         public Task DeleteAsync(T entity)
         {
-            throw new NotImplementedException();
+            if (_context.Entry(entity).State == EntityState.Detached)
+            {
+                _context.Set<T>().Attach(entity);
+            }
+            _context.Set<T>().Remove(entity);
+            return Task.CompletedTask;
+           
         }
 
         public async Task<ViewListDto<T>> PagingAsync(IQueryable<T> records, int pageIndex, int pageSize)
@@ -69,5 +88,6 @@ namespace EcommerceWeb.API.Repositories
             var listResult = await records?.Skip((pageIndex - 1) * pageSize).Take(pageSize).ToListAsync();
             return new ViewListDto<T> { ModelDatas = listResult, MaxPage = maxNumberOfPage, PageIndex = pageIndex };
         }
+
     }
 }

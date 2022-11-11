@@ -14,10 +14,16 @@ namespace EcommerceWeb.API.Utilities
         public MappingProfile()
         {
             CreateMap<Product, ProductDto>();
+            CreateMap<Product, ProductCreateDto>();
+            CreateMap<Product, ProductEditlDto>();
 
             CreateMap<Category, CategoryDto>();
 
             CreateMap<Rating, RatingDto>();
+
+            CreateMap<AUser, UserDto>();
+
+            CreateMap<ProductImage, ProductImageDto>();
         }
     }
 }

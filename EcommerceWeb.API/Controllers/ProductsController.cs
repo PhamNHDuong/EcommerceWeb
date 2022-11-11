@@ -1,11 +1,16 @@
 ﻿using AutoMapper;
 using EcommerceWeb.API.Repositories;
 using EcommerceWeb.API.Repositories.Interfaces;
+using EcommerceWeb.API.Utilities;
 using EcommerceWeb.Data.Entities;
 using EcommerceWeb.Dto.Models;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.VisualStudio.Services.Common;
+using System.Collections.Generic;
+using System.Drawing;
+using System.IO;
 
 namespace EcommerceWeb.API.Controllers
 {
@@ -16,9 +21,10 @@ namespace EcommerceWeb.API.Controllers
         private readonly IRepositoryWrapper _repository;
         private readonly IMapper _mapper;
 
+
         public ProductsController(IRepositoryWrapper repository, IMapper mapper)
         {
-            _repository = repository; 
+            _repository = repository;
             _mapper = mapper;
         }
 
@@ -29,7 +35,6 @@ namespace EcommerceWeb.API.Controllers
             try
             {
                 var products = await _repository.Product.GetAllProductsAsync();
-                //_logger.LogInformation($"Returned all owners from database.");
                 var data = _mapper.Map<IEnumerable<ProductDto>>(products);
                 //return Ok(ownersResult);
                 return Ok(data);
@@ -66,9 +71,9 @@ namespace EcommerceWeb.API.Controllers
             try
             {
                 var productsData = await _repository.Product.PagingAsync(_repository.Product.GetMany(p => p.IsDeleted == false, p => p.Category).OrderBy(p => p.Name), pageIndex);
-
+                
                 var products = _mapper.Map<List<ProductDto>>(productsData.ModelDatas);
-
+                
                 return Ok(new ViewListDto<ProductDto> { ModelDatas = products, MaxPage = productsData.MaxPage, PageIndex = pageIndex });
             }
             catch (IndexOutOfRangeException ex)
@@ -76,9 +81,10 @@ namespace EcommerceWeb.API.Controllers
                 return BadRequest("Can't find this page");
             }
         }
+
         //User search
         [HttpPost("search")]
-        public async Task<ActionResult<ViewListDto<ProductDto>>> GetProductByName([FromBody] RequestSearchProductDTO requestModel)
+        public async Task<ActionResult<ViewListDto<ProductDto>>> GetProductByName([FromBody] ProductSearchDto requestModel)
         {
             try
             {
@@ -119,7 +125,7 @@ namespace EcommerceWeb.API.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<ProductDto>> GetProduct([FromRoute] Guid id)
         {
-            var product = await _repository.Product.GetByAsync(p => p.ProductId == id);
+            var product = await _repository.Product.GetByAsync(p => p.ProductId == id, p => p.ProductImages);
 
             if (product == null)
             {
@@ -129,6 +135,110 @@ namespace EcommerceWeb.API.Controllers
 
             return convertData;
         }
+
+        [HttpPost]
+        [Route("create")]
+        public async Task<IActionResult> CreateProduct([FromForm] ProductCreateDto newProduct)
+        {
+            if (newProduct == null)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "Product creation failed! Please check product details and try again." });
+            }
+            Product data = new Product()
+            {
+                ProductId = Guid.NewGuid(),
+                Name = newProduct.Name,
+                Description = newProduct.Description,
+                Price = newProduct.Price,
+                Stock = newProduct.Stock,
+                Category = await _repository.Category.GetByAsync(c => c.CategoryId == newProduct.CategoryCategoryId),
+                IsDeleted = false,
+            };
+
+            if (_repository.Product.InsertAsync(data).IsCanceled)
+                return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "Product creation failed! Please check product details and try again." });
+            await _repository.SaveAsync();
+            return Ok(new Response { Status = "Success", Message = "Product created successfully!" });
+        }
+
+        [HttpPut("update")]
+        public async Task<ActionResult<ProductDto>> UpdateProduct(Guid id, [FromBody] ProductEditlDto productUpdate)
+        {
+            var data = _repository.Product.GetByAsync(u => u.ProductId == id);
+            if (data.Result == null)
+            {
+                return NotFound();
+            }
+
+            var product = data.Result;
+
+            product.Name = productUpdate.Name;
+            product.Price = productUpdate.Price;
+            product.Description = productUpdate.Description;
+            product.Category = await _repository.Category.GetByAsync(c => c.CategoryId == productUpdate.Category.CategoryId);
+
+            await _repository.Product.UpdateAsync(product);
+            await _repository.SaveAsync();
+
+            return Ok(new Response { Status = "Success", Message = "Product updated successfully!" });
+        }
+
+        [HttpPatch("show")]
+        public async Task<ActionResult<ProductDto>> ShowProduct(Guid id)
+        {
+            var data = _repository.Product.GetByAsync(u => u.ProductId == id);
+            if (data.Result == null)
+            {
+                return NotFound();
+            }
+
+            var product = data.Result;
+
+            product.IsDeleted = false;
+
+            await _repository.Product.UpdateAsync(product);
+            await _repository.SaveAsync();
+
+            return Ok(new Response { Status = "Success", Message = "Product showed successfully!" });
+        }
+
+        [HttpPatch("delete")]
+        public async Task<ActionResult<ProductDto>> DeleteProduct(Guid id)
+        {
+            var data = _repository.Product.GetByAsync(u => u.ProductId == id);
+            if (data.Result == null)
+            {
+                return NotFound();
+            }
+
+            var product = data.Result;
+
+            product.IsDeleted = true;
+
+            await _repository.Product.UpdateAsync(product);
+            await _repository.SaveAsync();
+
+            return Ok(new Response { Status = "Success", Message = "Product deleted successfully!" });
+        }
+
+        //[HttpPost("changeCategoryofProducts")]
+        //public async Task<ActionResult> ChangeCategoryofProducts(Guid categoryId)
+        //{
+        //    if(await _repository.Category.GetByAsync(c => c.CategoryId == categoryId && c.IsDeleted) == null)
+        //    {
+        //        return NotFound();
+        //    }
+        //    var productsInCategory = _repository.Product.GetMany(p => p.Category.CategoryId == categoryId, p => p.Category);
+        //    foreach (var item in productsInCategory)
+        //    {
+        //        item.IsDeleted = true;
+        //        await _repository.Product.UpdateAsync(item);
+        //        await _repository.SaveAsync();
+        //    }
+
+        //    return Ok(new Response { Status = "Success", Message = "Products status changed successfully!" });
+        //}
+
 
     }
 }

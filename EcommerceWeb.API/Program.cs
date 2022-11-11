@@ -1,5 +1,6 @@
 using EcommerceWeb.API.Repositories;
 using EcommerceWeb.API.Repositories.Interfaces;
+using EcommerceWeb.API.Utilities;
 using EcommerceWeb.Data.DatabaseContext;
 using EcommerceWeb.Data.Entities;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -9,13 +10,17 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Configuration;
 using System.Text;
+using System.Xml.Schema;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllers();
 
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+builder.Services.AddControllers().AddNewtonsoftJson(options =>
+    options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+
+);// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
@@ -85,7 +90,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(
 //});
 
 builder.Services.AddAutoMapper(typeof(Program));
-
+builder.Services.AddScoped<ImageExtensions, ImageExtensions>();
 builder.Services.AddScoped<IRepositoryWrapper, RepositoryWrapper>();
 
 
@@ -104,7 +109,7 @@ app.UseHttpsRedirection();
 app.UseCors("OpenCorsPolicy");
 
 app.UseAuthentication();
-//app.UseAuthorization();
+app.UseAuthorization();
 
 app.MapControllers();
 

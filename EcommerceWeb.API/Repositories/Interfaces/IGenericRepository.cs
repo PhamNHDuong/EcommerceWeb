@@ -8,12 +8,13 @@ namespace EcommerceWeb.API.Repositories.Interfaces
     {
         IQueryable<T> GetAll();
         Task<T> GetByAsync(Expression<Func<T, bool>> expression);
+        Task<T> GetByAsync(Expression<Func<T, bool>> expression, Expression<Func<T, object>> includes);
         IQueryable<T> GetMany(Expression<Func<T, bool>> expression);
         IQueryable<T> GetMany(Expression<Func<T, bool>> expression, params Expression<Func<T, object>>[] includes);
 
         Task<ViewListDto<T>> PagingAsync(IQueryable<T> records, int pageIndex = 1, int pageSize = 4);
-        Task SaveAsync(T entity);
-        //Task UpdateAsync(T entity);
-        //Task DeleteAsync(T entity);
+        Task InsertAsync(T entity);
+        Task UpdateAsync(T entity);
+        Task DeleteAsync(T entity);
     }
 }
