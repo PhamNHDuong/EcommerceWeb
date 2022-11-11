@@ -4,6 +4,9 @@ using EcommerceWeb.CustomerSite.Utilities;
 using Microsoft.AspNetCore.Authorization;
 using EcommerceWeb.Dto.Models;
 using Refit;
+using EcommerceWeb.Data.Entities;
+using Microsoft.EntityFrameworkCore;
+using System;
 
 namespace EcommerceWeb.CustomerSite.Controllers
 {
@@ -35,11 +38,11 @@ namespace EcommerceWeb.CustomerSite.Controllers
                 }
                 else if (string.IsNullOrEmpty(searchName))
                 {
-                    productsList = await _data.SearchingAsync(new RequestSearchProductDTO { CategoryId = searchType, ProductName = "", PageIndex = pageIndex });
+                    productsList = await _data.SearchingAsync(new ProductSearchDto { CategoryId = searchType, ProductName = "", PageIndex = pageIndex });
                 }
                 else
                 {
-                    productsList = await _data.SearchingAsync(new RequestSearchProductDTO { CategoryId = searchType, ProductName = searchName, PageIndex = pageIndex });
+                    productsList = await _data.SearchingAsync(new ProductSearchDto { CategoryId = searchType, ProductName = searchName, PageIndex = pageIndex });
                 }
             }
             catch (ApiException e)
@@ -53,6 +56,12 @@ namespace EcommerceWeb.CustomerSite.Controllers
             ViewData["Category"] = new SelectList(categoryList, "CategoryId", "Name");
             ViewData["SearchName"] = searchName;
             ViewData["SearchType"] = searchType;
+            List<ProductImageDto> imgs = new List<ProductImageDto>();
+            foreach (var product in productsList.ModelDatas)
+            {
+                imgs.AddRange(_data.GetImages(product.ProductId).Result);
+            }
+            ViewData["ProductImages"] = imgs;
             return View(productsList);
         }
 
@@ -76,10 +85,9 @@ namespace EcommerceWeb.CustomerSite.Controllers
             //    var userId = User.Claims.FirstOrDefault(u => u.Type == "userid").Value;
             //    ViewData["userid"] = userId;
             //}
-            else
-            {
-                ViewData["userid"] = null;
-            }
+
+            var userId = User.Claims.FirstOrDefault(u => u.Type == "userid");
+            ViewData["userid"] = userId;
 
             var ratingList = await _data.GetRatingAsync(id.GetValueOrDefault());
             ViewData["ratingList"] = ratingList;

@@ -13,7 +13,10 @@ namespace EcommerceWeb.CustomerSite.Utilities
         Task<ProductDto> GetProductByIdAsync([FromRoute] Guid id);
 
         [Post("/Products/search")]
-        Task<ViewListDto<ProductDto>> SearchingAsync(RequestSearchProductDTO model);
+        Task<ViewListDto<ProductDto>> SearchingAsync(ProductSearchDto model);
+
+        [Post("/Products/create")]
+        Task<Response> CreateProduct(ProductSearchDto model);
 
         [Get("/Categories")]
         Task<IEnumerable<CategoryDto>> GetCategoriesAsync();
@@ -28,7 +31,10 @@ namespace EcommerceWeb.CustomerSite.Utilities
         Task<List<RatingDto>> GetRatingAsync(Guid id);
 
         [Post("/Ratings")]
-        Task<ActionResult> CreateRatingAsync(RatingDto model, [Header("Authorization")] string bearerToken);
+        Task<ActionResult> CreateRatingAsync(RatingDto model/*, [Header("Authorization")] string bearerToken*/);
+
+        [Get("/Images")]
+        Task<List<ProductImageDto>> GetImages(Guid id);
 
     }
 }

@@ -41,17 +41,14 @@ namespace EcommerceWeb.CustomerSite.Controllers
             else
             {
                 var claims = new List<Claim>();
-                foreach (var role in token.UserInfo.Roles)
-                {
-                    claims.Add(new Claim(ClaimTypes.Role, role));
-                }
                 List<Claim> userclaims = new List<Claim>
-                {
-                    new Claim("token", "Bearer " + token.TokenString),
-                    new Claim("expiration", token.Expiration.ToString()),
-                    new Claim("userid", token.UserInfo.Id.ToString()),
-                    new Claim("username", token.UserInfo.UserName)
-                }; 
+                    {
+                        new Claim("token", "Bearer " + token.TokenString),
+                        new Claim("expiration", token.Expiration.ToString()),
+                        new Claim("userid", token.UserInfo.AUserId.ToString()),
+                        new Claim("username", token.UserInfo.UserName),
+                        new Claim("role", token.UserInfo.Role)
+                    };
                 claims.AddRange(userclaims);
 
                 var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
@@ -61,7 +58,8 @@ namespace EcommerceWeb.CustomerSite.Controllers
                 TempData["Message"] = "Login success";
                 return RedirectToAction("Index", "Products");
             }
-        }
+            //return View();
+    }
         [Authorize]
         public async Task<ActionResult> Logout()
         {

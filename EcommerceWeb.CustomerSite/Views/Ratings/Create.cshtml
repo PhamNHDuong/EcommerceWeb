@@ -1,27 +1,34 @@
 ﻿@using EcommerceWeb.Data.Entities
 @model Rating
+
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Create";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Edit</h1>
+<h1>Create</h1>
 
 <h4>Rating</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Edit">
+        <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="User" />
-            <input type="hidden" asp-for="Product.ProductId" />
+            <div class="form-group">
+                <label asp-for="AUser.AUserId" class="control-label"></label>
+                <select asp-for="AUser.AUserId" class="form-control" asp-items="ViewBag.UserID"></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="Product.ProductId" class="control-label"></label>
+                <select asp-for="Product.ProductId" class="form-control" asp-items="ViewBag.ProductID"></select>
+            </div>
             <div class="form-group">
                 <label asp-for="Star" class="control-label"></label>
                 <select asp-for="Star" class="form-control"></select>
                 <span asp-validation-for="Star" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+                <input type="submit" value="Create" class="btn btn-primary" />
             </div>
         </form>
     </div>
@@ -35,4 +42,4 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
-    }
+}
