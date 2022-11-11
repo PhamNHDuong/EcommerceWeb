@@ -6,11 +6,13 @@ using System.Threading.Tasks;
 
 namespace EcommerceWeb.Dto.Models
 {
-    public class RatingDto
+    public class ProductImageDto
     {
-        public Guid AUserAUserId { get; set; }
+        public Guid ImageId { get; set; }
+
         public Guid ProductProductId { get; set; }
-        public int Star { get; set; }
-        public string Comment { get; set; }
+
+        public byte[]? ImageBin { get; set; }
+        public string? Alt { get; set; }
     }
 }

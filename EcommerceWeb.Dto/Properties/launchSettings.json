@@ -1,0 +1,12 @@
+{
+  "profiles": {
+    "EcommerceWeb.Dto": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "applicationUrl": "https://localhost:54846;http://localhost:54851"
+    }
+  }
+}

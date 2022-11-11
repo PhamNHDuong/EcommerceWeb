@@ -32,19 +32,27 @@ namespace EcommerceWeb.Dto.Models
         public const string Admin = "Admin";
         public const string Customer = "Customer";
     }
-    public class UserDTO
+    public class UserDto
     {
-        public UserDTO() { }
+        //public UserDto() { }
 
-        public string Id { get; set; }
+        //public string Id { get; set; }
+        public Guid AUserId { get; set; }
         public string UserName { get; set; }
-        public List<string> Roles { get; set; }
+        public string Role { get; set; }
+        public bool IsDeleted { get; set; }
+    }
+    public class UserEditDto
+    {
+        public string UserName { get; set; }
+        public string Role { get; set; }
+        public bool IsDeleted { get; set; }
     }
     public class Token
     {
         public string TokenString { get; set; }
         public DateTime Expiration { get; set; }
-        public UserDTO UserInfo { get; set; }
+        public UserDto UserInfo { get; set; }
     }
     public class Response
     {

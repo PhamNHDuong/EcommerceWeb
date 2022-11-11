@@ -5,14 +5,30 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 
 namespace EcommerceWeb.Dto.Models
 {
-    public class RequestSearchProductDTO
+    public class ProductSearchDto
     {
         public int PageIndex { get; set; }
         public string ProductName { get; set; } = "";
         public Guid CategoryId { get; set; } = Guid.Empty;
+    }
+
+    public class ProductCreateDto
+    {
+        [Display(Name = "Category Id")]
+        public Guid CategoryCategoryId { get; set; }
+        public string Name { get; set; }
+        public double Price { get; set; }
+        public string Description { get; set; }
+        public int Stock { get; set; }
+        public IFormFileCollection ProductImages { get; set; }
+
+        [Display(Name = "Choose images")]
+        public IFormFileCollection Files { get; set; }
     }
 
     public class ProductDto
@@ -28,25 +44,25 @@ namespace EcommerceWeb.Dto.Models
         public Guid CategoryCategoryId { get; set; }
 
         public string Name { get; set; }
-        public decimal Price { get; set; }
+        public double Price { get; set; }
         public string Description { get; set; }
         public int Stock { get; set; }
         public bool IsDeleted { get; set; } = false;
-
-        [Display(Name = "Category Name")]
         public string CategoryName { get; set; }
-        //public ICollection<ProductImage> Images { get; set; }
+        public List<byte[]> ProductImagesImageBin { get; set; }
     }
 
-    public class ProductDetailDto
+    public class ProductEditlDto
     {
-        public int Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
-        public int Prices { get; set; }
-        public int AverageRate { get; set; }
-        //public IEnumerable<ImageReadDto> Images { get; set; }
+        public double Price { get; set; }
+        public int Stock { get; set; }
+        [Display(Name = "CategoryId")]
+        public CategoryDto Category { get; set; }
+        public IFormFileCollection ProductImages { get; set; }
     }
+
     public class ProductRatingWriteDto
     {
         public int ProductId { get; set; }
