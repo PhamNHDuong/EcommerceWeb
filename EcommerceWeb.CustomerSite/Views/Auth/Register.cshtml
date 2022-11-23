@@ -1,7 +1,9 @@
 ﻿@*
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
+
 @{
+    var returnUrl = ViewBag.ReturnUrl as string;
 }
 
 <form asp-action="Register" asp-controller="Auth">
@@ -31,5 +33,5 @@
     </div>
     @Html.ValidationSummary()
     <button class="btn btn-success">Register</button>
-    <p>You have an account already? <a asp-action="Login">Login</a></p>
+    <p>You have an account already? <a asp-route-returnUrl="@returnUrl" asp-action="Login">Login</a></p>
 </form>

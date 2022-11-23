@@ -1,6 +1,6 @@
 ﻿@using EcommerceWeb.Dto.Models
 
-@model ViewListDto<ProductDto>
+@model ViewListDto<ProductViewDto>
 
 @{
     ViewData["Title"] = "Search";
@@ -33,10 +33,21 @@
                     @foreach (var item in Model.ModelDatas)
                     {
                         <div class="card col-md-3 me-1">
-                            @*<img src=@item.ImgUrls.First() class="card-img-top" alt="...">*@
+                            @{
+                                if (ViewData["ProductImages"] != null)
+                                {
+                                    foreach (var img in ViewData["ProductImages"] as List<ProductImageDto>)
+                                    {
+                                        if (img.ProductProductId == item.ProductId)
+                                        {
+                                            <img src=@img.ImageBin class="card-img-top" style="height: 300px; width:100%; " alt="...">
+                                        }
+                                    }
+                                }
+                            }
                             <div class="card-body">
                                 <h5 class="card-title">@item.Name</h5>
-                                <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                                <p class="card-text">@item.Description</p>
                                 <a asp-action="Details" asp-route-id="@item.ProductId" class="btn btn-primary">Details</a>
                             </div>
                         </div>

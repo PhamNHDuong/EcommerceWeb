@@ -4,9 +4,6 @@ using EcommerceWeb.CustomerSite.Utilities;
 using Microsoft.AspNetCore.Authorization;
 using EcommerceWeb.Dto.Models;
 using Refit;
-using EcommerceWeb.Data.Entities;
-using Microsoft.EntityFrameworkCore;
-using System;
 
 namespace EcommerceWeb.CustomerSite.Controllers
 {
@@ -24,12 +21,18 @@ namespace EcommerceWeb.CustomerSite.Controllers
         {
             var productsList = await _data.GetProductsAsync(pageIndex);
             ViewBag.categories = new SelectList(await _data.GetCategoriesAsync(), "CategoryId", "Name", null);
+            List<ProductImageDto> imgs = new List<ProductImageDto>();
+            foreach (var product in productsList.ModelDatas)
+            {
+                imgs.AddRange(_data.GetImages(product.ProductId).Result);
+            }
+            ViewData["ProductImages"] = imgs;
             return View(productsList);
         }
 
         public async Task<IActionResult> Search(string searchName, Guid searchType, [FromQuery] int pageIndex = 1)
         {
-            var productsList = new ViewListDto<ProductDto>();
+            var productsList = new ViewListDto<ProductViewDto>();
             try
             {
                 if (searchType.Equals(Guid.Empty) && string.IsNullOrEmpty(searchName))
@@ -54,14 +57,16 @@ namespace EcommerceWeb.CustomerSite.Controllers
 
             var categoryList = await _data.GetCategoriesAsync();
             ViewData["Category"] = new SelectList(categoryList, "CategoryId", "Name");
-            ViewData["SearchName"] = searchName;
-            ViewData["SearchType"] = searchType;
+            
             List<ProductImageDto> imgs = new List<ProductImageDto>();
             foreach (var product in productsList.ModelDatas)
             {
                 imgs.AddRange(_data.GetImages(product.ProductId).Result);
             }
+
             ViewData["ProductImages"] = imgs;
+            ViewData["SearchName"] = searchName;
+            ViewData["SearchType"] = searchType;
             return View(productsList);
         }
 
@@ -74,20 +79,22 @@ namespace EcommerceWeb.CustomerSite.Controllers
             }
 
             var product = await _data.GetProductByIdAsync(id.GetValueOrDefault());
-            var cateName = product.CategoryName;
             if (product == null)
             {
                 return NotFound();
             }
 
-            //if (User.Identity.IsAuthenticated)
-            //{
-            //    var userId = User.Claims.FirstOrDefault(u => u.Type == "userid").Value;
-            //    ViewData["userid"] = userId;
-            //}
+            List<ProductImageDto> imgs = new List<ProductImageDto>();
+            imgs.AddRange(_data.GetImages(product.ProductId).Result);
+            ViewData["ProductImages"] = imgs;
 
-            var userId = User.Claims.FirstOrDefault(u => u.Type == "userid");
-            ViewData["userid"] = userId;
+            try
+            {
+                var userId = User.Claims.FirstOrDefault(u => u.Type == "userid").Value;
+                ViewData["userid"] = userId;
+
+            }
+            catch { }
 
             var ratingList = await _data.GetRatingAsync(id.GetValueOrDefault());
             ViewData["ratingList"] = ratingList;

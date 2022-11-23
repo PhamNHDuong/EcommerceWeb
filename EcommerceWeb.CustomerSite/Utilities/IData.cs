@@ -7,19 +7,16 @@ namespace EcommerceWeb.CustomerSite.Utilities
     public interface IData
     {
         [Get("/Products/available")]
-        Task<ViewListDto<ProductDto>> GetProductsAsync([FromQuery] int pageIndex);
+        Task<ViewListDto<ProductViewDto>> GetProductsAsync([FromQuery] int pageIndex);
 
         [Get("/Products/{id}")]
-        Task<ProductDto> GetProductByIdAsync([FromRoute] Guid id);
+        Task<ProductViewDto> GetProductByIdAsync([FromRoute] Guid id);
 
         [Post("/Products/search")]
-        Task<ViewListDto<ProductDto>> SearchingAsync(ProductSearchDto model);
+        Task<ViewListDto<ProductViewDto>> SearchingAsync(ProductSearchDto model);
 
-        [Post("/Products/create")]
-        Task<Response> CreateProduct(ProductSearchDto model);
-
-        [Get("/Categories")]
-        Task<IEnumerable<CategoryDto>> GetCategoriesAsync();
+        [Get("/Categories/available")]
+        Task<IEnumerable<CategoryListDto>> GetCategoriesAsync();
 
         [Post("/Users/register")]
         Task<Response> RegisterAsync(RegisterModel registerModel);
@@ -33,7 +30,7 @@ namespace EcommerceWeb.CustomerSite.Utilities
         [Post("/Ratings")]
         Task<ActionResult> CreateRatingAsync(RatingDto model/*, [Header("Authorization")] string bearerToken*/);
 
-        [Get("/Images")]
+        [Get("/Images/{id}")]
         Task<List<ProductImageDto>> GetImages(Guid id);
 
     }

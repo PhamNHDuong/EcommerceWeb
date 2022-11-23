@@ -1,6 +1,6 @@
 ﻿@using EcommerceWeb.Dto.Models
 
-@model ViewListDto<ProductDto>
+@model ViewListDto<ProductViewDto>
 
 
 @{
@@ -36,15 +36,15 @@
                                         {
                                             if (img.ProductProductId == item.ProductId)
                                             {
-                                                <img src="data:image/jpg;base64, @img.ImageBin" class="card-img-top" alt="...">
+                                                <img src=@img.ImageBin class="card-img-top" style="height: 300px; width:100%; " alt="...">
                                             }
                                         }
                                     }}
-                                <img src="data:image/jpg;base64, @item.ProductImagesImageBin" class="card-img-top" alt="...">
+                                @* <img src="data:image/jpg;base64, @item.ProductImagesImageBin" class="card-img-top" alt="..."> *@
 
                                 <div class="card-body">
                                     <h5 class="card-title">@item.Name</h5>
-                                    <p class="card-text" style="height: 52px; overflow: hidden">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                                    <p class="card-text" style="height: 52px; overflow: hidden">@item.Description</p>
                                     <a asp-action="Details" asp-route-id="@item.ProductId" class="btn btn-primary">Details</a>
                                 </div>
                             </div>
@@ -74,15 +74,15 @@
                                 {
                                     if (i == Model.PageIndex)
                                     {
-                                                                    <li class="page-item active" aria-current="page">
-                                                                        @Html.ActionLink(i.ToString(), "Index", "Products",new {pageIndex = i}, new {@class = "page-link"})
-                                                                    </li>
+                                        <li class="page-item active" aria-current="page">
+                                            @Html.ActionLink(i.ToString(), "Index", "Products",new {pageIndex = i}, new {@class = "page-link"})
+                                        </li>
                                     }
                                     else
                                     {
-                                                                    <li class="page-item" aria-current="page">
-                                                                        @Html.ActionLink(i.ToString(), "Index", "Products",new {pageIndex = i}, new {@class = "page-link"})
-                                                                    </li>
+                                        <li class="page-item" aria-current="page">
+                                            @Html.ActionLink(i.ToString(), "Index", "Products",new {pageIndex = i}, new {@class = "page-link"})
+                                        </li>
                                     }
                                 }
                             }
@@ -94,15 +94,15 @@
                                     {
                                         if (i == Model.PageIndex)
                                         {
-                                                                        <li class="page-item active" aria-current="page">
-                                                                            @Html.ActionLink(i.ToString(), "Index", "Products",new {pageIndex = i}, new {@class = "page-link"})
-                                                                        </li>
+                                            <li class="page-item active" aria-current="page">
+                                                @Html.ActionLink(i.ToString(), "Index", "Products",new {pageIndex = i}, new {@class = "page-link"})
+                                            </li>
                                         }
                                         else
                                         {
-                                                                        <li class="page-item" aria-current="page">
-                                                                            @Html.ActionLink(i.ToString(), "Index", "Products",new {pageIndex = i}, new {@class = "page-link"})
-                                                                        </li>
+                                            <li class="page-item" aria-current="page">
+                                                @Html.ActionLink(i.ToString(), "Index", "Products",new {pageIndex = i}, new {@class = "page-link"})
+                                            </li>
                                         }
                                     }
                                 }
@@ -112,15 +112,15 @@
                                     {
                                         if (i == Model.PageIndex)
                                         {
-                                                                        <li class="page-item active" aria-current="page">
-                                                                            @Html.ActionLink(i.ToString(), "Index", "Products",new {pageIndex = i}, new {@class = "page-link"})
-                                                                        </li>
+                                            <li class="page-item active" aria-current="page">
+                                                @Html.ActionLink(i.ToString(), "Index", "Products",new {pageIndex = i}, new {@class = "page-link"})
+                                            </li>
                                         }
                                         else
                                         {
-                                                                        <li class="page-item" aria-current="page">
-                                                                            @Html.ActionLink(i.ToString(), "Index", "Products",new {pageIndex = i}, new {@class = "page-link"})
-                                                                        </li>
+                                            <li class="page-item" aria-current="page">
+                                                @Html.ActionLink(i.ToString(), "Index", "Products",new {pageIndex = i}, new {@class = "page-link"})
+                                            </li>
                                         }
                                     }
                                 }
@@ -130,15 +130,15 @@
                                     {
                                         if (i == Model.PageIndex)
                                         {
-                                                                        <li class="page-item active" aria-current="page">
-                                                                            @Html.ActionLink(i.ToString(), "Index", "Products",new {pageIndex = i}, new {@class = "page-link"})
-                                                                        </li>
+                                            <li class="page-item active" aria-current="page">
+                                                @Html.ActionLink(i.ToString(), "Index", "Products",new {pageIndex = i}, new {@class = "page-link"})
+                                            </li>
                                         }
                                         else
                                         {
-                                                                        <li class="page-item" aria-current="page">
-                                                                            @Html.ActionLink(i.ToString(), "Index", "Products",new {pageIndex = i}, new {@class = "page-link"})
-                                                                        </li>
+                                            <li class="page-item" aria-current="page">
+                                                @Html.ActionLink(i.ToString(), "Index", "Products",new {pageIndex = i}, new {@class = "page-link"})
+                                            </li>
                                         }
                                     }
                                 }
