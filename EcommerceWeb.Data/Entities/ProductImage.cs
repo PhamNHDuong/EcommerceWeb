@@ -10,7 +10,7 @@ namespace EcommerceWeb.Data.Entities
 
         public virtual Product Product { get; set; }
 
-        public byte[]? ImageBin { get; set; }
+        public string? ImageBin { get; set; }
         public string? Alt { get; set; }
     }
 }

@@ -4,6 +4,7 @@ using EcommerceWeb.Data.DatabaseContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EcommerceWeb.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20221119161528_AddDescriptionToCategory")]
+    partial class AddDescriptionToCategory
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -189,8 +191,8 @@ namespace EcommerceWeb.Data.Migrations
                     b.Property<string>("Alt")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("ImageBin")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<byte[]>("ImageBin")
+                        .HasColumnType("varbinary(max)");
 
                     b.Property<Guid>("ProductId")
                         .HasColumnType("uniqueidentifier");
