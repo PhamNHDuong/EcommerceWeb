@@ -1,0 +1,40 @@
+h1 {
+  display: flex;
+  color: lightgray;
+  font-size: 30px;
+  justify-content: center;
+  align-items: center;
+}
+
+form {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: column;
+  gap: 30px;
+  justify-content: space-around;
+  align-content: center;
+
+  input {
+    width: 100%;
+    padding: 5px;
+    border: none;
+    border-bottom: 1px solid gray;
+
+    .error{
+        background-color: white;
+        color: red;
+    }
+  }
+
+  button {
+    margin-left: 3rem;
+    width: 150px;
+    padding: 10px;
+    border: none;
+    background-color: teal;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 10px;
+  }
+}

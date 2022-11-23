@@ -1,0 +1,5 @@
+@import "@font/nunito";
+
+body {
+  font-family: var(--fontFamily-nunito);
+}
