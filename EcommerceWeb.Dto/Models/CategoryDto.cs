@@ -10,5 +10,25 @@ namespace EcommerceWeb.Dto.Models
     {
         public Guid CategoryId { get; set; }
         public string Name { get; set; }
+        public string Description { get; set; }
+        public bool IsDeleted { get; set; }
+        public string DateCreated { get; set; }
+        public string DateUpdated { get; set; }
+    }
+    public class CategoryListDto
+    {
+        public Guid CategoryId { get; set; }
+        public string Name { get; set; }
+    }
+    public class CategoryCreateDto
+    {
+        public string Name { get; set; }
+        public string Description { get; set; }
+    }
+    public class CategoryEditDto
+    {
+        public string Name { get; set; }
+        public string Description { get; set; }
+
     }
 }

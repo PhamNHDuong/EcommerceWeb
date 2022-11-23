@@ -25,10 +25,11 @@ namespace EcommerceWeb.Dto.Models
         public double Price { get; set; }
         public string Description { get; set; }
         public int Stock { get; set; }
-        public IFormFileCollection ProductImages { get; set; }
+        public string ImageBin { get; set; }
+        //public IFormFileCollection ProductImages { get; set; }
 
-        [Display(Name = "Choose images")]
-        public IFormFileCollection Files { get; set; }
+        //[Display(Name = "Choose images")]
+        //public IFormFileCollection Files { get; set; }
     }
 
     public class ProductDto
@@ -38,29 +39,44 @@ namespace EcommerceWeb.Dto.Models
         //public string Description { get; set; }
 
         //public double Price { get; set; }
-        public Guid ProductId { get; set; }
-
-        [Display(Name = "Category Id")]
         public Guid CategoryCategoryId { get; set; }
 
+        public Guid ProductId { get; set; }
+        //[Display(Name = "Category Id")]
+        //public Guid CategoryCategoryId { get; set; }
         public string Name { get; set; }
         public double Price { get; set; }
-        public string Description { get; set; }
+        //public string Description { get; set; }
         public int Stock { get; set; }
         public bool IsDeleted { get; set; } = false;
         public string CategoryName { get; set; }
-        public List<byte[]> ProductImagesImageBin { get; set; }
+        public string Description { get; set; }
+        public string DateCreated { get; set; }
+        public string DateUpdated { get; set; }
+        //public List<string> ProductImagesImageBin { get; set; }
     }
+    public class ProductViewDto
+    {
+        //public string Name { get; set; }
 
+        //public string Description { get; set; }
+
+        //public double Price { get; set; }
+        public Guid ProductId { get; set; }
+        public string Name { get; set; }
+        public double Price { get; set; }
+        public int Stock { get; set; }
+        public string Description { get; set; }
+        public List<ProductImageDto> ProductImagesImageBin { get; set; }
+    }
     public class ProductEditlDto
     {
         public string Name { get; set; }
         public string Description { get; set; }
         public double Price { get; set; }
         public int Stock { get; set; }
-        [Display(Name = "CategoryId")]
-        public CategoryDto Category { get; set; }
-        public IFormFileCollection ProductImages { get; set; }
+        public string CategoryCategoryId { get; set; }
+        //public IFormFileCollection? ProductImages { get; set; }
     }
 
     public class ProductRatingWriteDto
