@@ -20,15 +20,15 @@ namespace EcommerceWeb.API.Repositories
 
         public IQueryable<T> GetAll()
         {
-            return this._context.Set<T>().AsNoTracking();
+            return this._context.Set<T>().AsQueryable();
         }
         public Task<T> GetByAsync(Expression<Func<T, bool>> expression)
         {
             return _context.Set<T>().FirstOrDefaultAsync(expression);
         }
-        public Task<T> GetByAsync(Expression<Func<T, bool>> expression, Expression<Func<T, object>> includes)
+        public async Task<T> GetByAsync(Expression<Func<T, bool>> expression, Expression<Func<T, object>> includes)
         {
-            return _context.Set<T>().Include(includes).FirstOrDefaultAsync(expression);
+            return await _context.Set<T>().Include(includes).FirstOrDefaultAsync(expression);
         }
 
         public IQueryable<T> GetMany(Expression<Func<T, bool>> expression)
@@ -67,7 +67,7 @@ namespace EcommerceWeb.API.Repositories
             }
             _context.Set<T>().Remove(entity);
             return Task.CompletedTask;
-           
+
         }
 
         public async Task<ViewListDto<T>> PagingAsync(IQueryable<T> records, int pageIndex, int pageSize)

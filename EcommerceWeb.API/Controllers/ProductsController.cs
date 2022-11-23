@@ -29,52 +29,35 @@ namespace EcommerceWeb.API.Controllers
         }
 
         // GET: api/Products
-        [HttpGet("Test")]
+        [HttpGet]
         public async Task<ActionResult> GetProducts()
         {
             try
             {
                 var products = await _repository.Product.GetAllProductsAsync();
                 var data = _mapper.Map<IEnumerable<ProductDto>>(products);
-                //return Ok(ownersResult);
                 return Ok(data);
             }
             catch (Exception ex)
             {
-                //_logger.LogError($"Something went wrong inside GetAllOwners action: {ex.Message}");
-                return StatusCode(500, "Internal server error");
-            }
-            //return await _context.Products.ToListAsync();
-        }
-
-        [HttpGet]
-        //[Authorize(Roles = "Admin")]
-        public async Task<ActionResult<ViewListDto<ProductDto>>> GetAllProducts([FromQuery] int pageIndex)
-        {
-            try
-            {
-                var productsData = await _repository.Product.PagingAsync(_repository.Product.GetAll().OrderBy(x => x.IsDeleted ? 1 : 0).Include(x => x.Category), pageIndex);
-
-                var products = _mapper.Map<List<ProductDto>>(productsData.ModelDatas);
-
-                return Ok(new ViewListDto<ProductDto> { ModelDatas = products, MaxPage = productsData.MaxPage, PageIndex = pageIndex });
-            }
-            catch (IndexOutOfRangeException ex)
-            {
-                return BadRequest("Can't find this page");
+                return StatusCode(500, ex.Message);
             }
         }
 
         [HttpGet("available")]
-        public async Task<ActionResult<ViewListDto<ProductDto>>> GetAvailableProducts([FromQuery] int pageIndex)
+        public async Task<ActionResult<ViewListDto<ProductViewDto>>> GetAvailableProducts([FromQuery] int pageIndex)
         {
+            if (pageIndex == 0)
+            {
+                pageIndex = 1;
+            }
             try
             {
                 var productsData = await _repository.Product.PagingAsync(_repository.Product.GetMany(p => p.IsDeleted == false, p => p.Category).OrderBy(p => p.Name), pageIndex);
-                
-                var products = _mapper.Map<List<ProductDto>>(productsData.ModelDatas);
-                
-                return Ok(new ViewListDto<ProductDto> { ModelDatas = products, MaxPage = productsData.MaxPage, PageIndex = pageIndex });
+
+                var products = _mapper.Map<List<ProductViewDto>>(productsData.ModelDatas);
+
+                return Ok(new ViewListDto<ProductViewDto> { ModelDatas = products, MaxPage = productsData.MaxPage, PageIndex = pageIndex });
             }
             catch (IndexOutOfRangeException ex)
             {
@@ -84,7 +67,7 @@ namespace EcommerceWeb.API.Controllers
 
         //User search
         [HttpPost("search")]
-        public async Task<ActionResult<ViewListDto<ProductDto>>> GetProductByName([FromBody] ProductSearchDto requestModel)
+        public async Task<ActionResult<ViewListDto<ProductViewDto>>> GetProductByName([FromBody] ProductSearchDto requestModel)
         {
             try
             {
@@ -111,9 +94,9 @@ namespace EcommerceWeb.API.Controllers
                     return BadRequest(new { message = "Can't find" });
                 }
 
-                var products = _mapper.Map<List<ProductDto>>(responseData.ModelDatas);
+                var products = _mapper.Map<List<ProductViewDto>>(responseData.ModelDatas);
 
-                return Ok(new ViewListDto<ProductDto> { ModelDatas = products, MaxPage = responseData.MaxPage, PageIndex = requestModel.PageIndex });
+                return Ok(new ViewListDto<ProductViewDto> { ModelDatas = products, MaxPage = responseData.MaxPage, PageIndex = requestModel.PageIndex });
             }
             catch (IndexOutOfRangeException ex)
             {
@@ -123,9 +106,23 @@ namespace EcommerceWeb.API.Controllers
 
         // GET: api/Products/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<ProductDto>> GetProduct([FromRoute] Guid id)
+        public async Task<ActionResult<ProductViewDto>> GetProduct([FromRoute] Guid id)
         {
             var product = await _repository.Product.GetByAsync(p => p.ProductId == id, p => p.ProductImages);
+
+            if (product == null)
+            {
+                return NotFound();
+            }
+            var convertData = _mapper.Map<ProductViewDto>(product);
+
+            return convertData;
+        }
+
+        [HttpGet("a-{id}")]
+        public async Task<ActionResult<ProductDto>> GetProductForAdmin([FromRoute] Guid id)
+        {
+            var product = await _repository.Product.GetOneProductsAsync(id);
 
             if (product == null)
             {
@@ -158,13 +155,24 @@ namespace EcommerceWeb.API.Controllers
             if (_repository.Product.InsertAsync(data).IsCanceled)
                 return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "Product creation failed! Please check product details and try again." });
             await _repository.SaveAsync();
+
+            ProductImage img = new ProductImage()
+            {
+                Product = await _repository.Product.GetByAsync(p => p.ProductId.Equals(data.ProductId)),
+                ImageId = Guid.NewGuid(),
+                ImageBin = newProduct.ImageBin,
+            };
+            if (_repository.Image.InsertAsync(img).IsCanceled)
+                return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "Image add failed! Please check image format and try again." });
+                
+            await _repository.SaveAsync();
             return Ok(new Response { Status = "Success", Message = "Product created successfully!" });
         }
 
         [HttpPut("update")]
-        public async Task<ActionResult<ProductDto>> UpdateProduct(Guid id, [FromBody] ProductEditlDto productUpdate)
+        public async Task<ActionResult<ProductDto>> UpdateProduct(/* [FromQuery(Name = "id")] */string id, [FromBody] ProductEditlDto productUpdate)
         {
-            var data = _repository.Product.GetByAsync(u => u.ProductId == id);
+            var data = _repository.Product.GetByAsync(u => u.ProductId == Guid.Parse(id));
             if (data.Result == null)
             {
                 return NotFound();
@@ -175,7 +183,7 @@ namespace EcommerceWeb.API.Controllers
             product.Name = productUpdate.Name;
             product.Price = productUpdate.Price;
             product.Description = productUpdate.Description;
-            product.Category = await _repository.Category.GetByAsync(c => c.CategoryId == productUpdate.Category.CategoryId);
+            product.Category = await _repository.Category.GetByAsync(c => c.CategoryId == Guid.Parse(productUpdate.CategoryCategoryId));
 
             await _repository.Product.UpdateAsync(product);
             await _repository.SaveAsync();
@@ -183,10 +191,10 @@ namespace EcommerceWeb.API.Controllers
             return Ok(new Response { Status = "Success", Message = "Product updated successfully!" });
         }
 
-        [HttpPatch("show")]
-        public async Task<ActionResult<ProductDto>> ShowProduct(Guid id)
+        [HttpPatch("enable")]
+        public async Task<ActionResult<ProductDto>> ShowProduct(string id)
         {
-            var data = _repository.Product.GetByAsync(u => u.ProductId == id);
+            var data = _repository.Product.GetByAsync(u => u.ProductId == Guid.Parse(id));
             if (data.Result == null)
             {
                 return NotFound();
@@ -202,10 +210,10 @@ namespace EcommerceWeb.API.Controllers
             return Ok(new Response { Status = "Success", Message = "Product showed successfully!" });
         }
 
-        [HttpPatch("delete")]
-        public async Task<ActionResult<ProductDto>> DeleteProduct(Guid id)
+        [HttpPatch("disable")]
+        public async Task<ActionResult<ProductDto>> DeleteProduct(string id)
         {
-            var data = _repository.Product.GetByAsync(u => u.ProductId == id);
+            var data = _repository.Product.GetByAsync(u => u.ProductId == Guid.Parse(id));
             if (data.Result == null)
             {
                 return NotFound();
@@ -220,25 +228,5 @@ namespace EcommerceWeb.API.Controllers
 
             return Ok(new Response { Status = "Success", Message = "Product deleted successfully!" });
         }
-
-        //[HttpPost("changeCategoryofProducts")]
-        //public async Task<ActionResult> ChangeCategoryofProducts(Guid categoryId)
-        //{
-        //    if(await _repository.Category.GetByAsync(c => c.CategoryId == categoryId && c.IsDeleted) == null)
-        //    {
-        //        return NotFound();
-        //    }
-        //    var productsInCategory = _repository.Product.GetMany(p => p.Category.CategoryId == categoryId, p => p.Category);
-        //    foreach (var item in productsInCategory)
-        //    {
-        //        item.IsDeleted = true;
-        //        await _repository.Product.UpdateAsync(item);
-        //        await _repository.SaveAsync();
-        //    }
-
-        //    return Ok(new Response { Status = "Success", Message = "Products status changed successfully!" });
-        //}
-
-
     }
 }

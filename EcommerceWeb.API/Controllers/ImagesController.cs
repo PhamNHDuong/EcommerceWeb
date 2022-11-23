@@ -33,14 +33,11 @@ namespace EcommerceWeb.API.Controllers
         {
             try
             {
-                var images = await _repository.Image.GetAll().ToListAsync();
-                //var data = _mapper.Map<IEnumerable<ProductDto>>(products);
-                //return Ok(ownersResult);
+                var images = await _repository.Image.GetAll().Include(i => i.Product).ToListAsync();
                 return Ok(images);
             }
             catch (Exception ex)
             {
-                //_logger.LogError($"Something went wrong inside GetAllOwners action: {ex.Message}");
                 return StatusCode(500, "Internal server error");
             }
         }
@@ -59,42 +56,24 @@ namespace EcommerceWeb.API.Controllers
         }
 
         [HttpPost]
-        [Route("image")]
-        public async Task<IActionResult> ImageTest()
+        [Route("")]
+        public async Task<IActionResult> ImageTest([FromBody] CreateProductImageDto data)
         {
-            string path = @"C:\Users\Admin\Pictures\Testimages\images.jpg";
-            byte[] b = _img.ImageToByteArray(Image.FromFile(path));
             ProductImage img = new ProductImage()
             {
-                Product = await _repository.Product.GetByAsync(p => p.ProductId.Equals("501b3b6d-eeb0-4b07-a9ac-e312e08bddeb")),
-                ImageId = Guid.Parse("501b3b6d-eeb0-4b27-a9ac-e312e08bdde2"),
-                ImageBin = b,
+                Product = await _repository.Product.GetByAsync(p => p.ProductId.Equals(data.ProductProductId)),
+                ImageId = Guid.NewGuid(),
+                ImageBin = data.ImageBin,
             };
             if (_repository.Image.InsertAsync(img).IsCanceled)
                 return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "Product creation failed! Please check product details and try again." });
             await _repository.SaveAsync();
-            return Ok(new Response { Status = "Success", Message = "Product created successfully!" });
+            return Ok(new Response { Status = "Success", Message = "Image created successfully!" });
         }
 
-        [HttpPut("update/img")]
+        [HttpPut("update")]
         public async Task<ActionResult<ProductDto>> UpdateImg()
         {
-            var data = _repository.Image.GetByAsync(u => u.ImageId == Guid.Parse("501b3b6d-eeb0-4b27-a9ac-e312e08bdde2"));
-            if (data.Result == null)
-            {
-                return NotFound();
-            }
-
-            string path = @"C:\Users\Admin\Pictures\Testimages\images.jpg";
-
-            var img = data.Result;
-            byte[] b = _img.ImageToByteArray(Image.FromFile(path));
-            img.ImageBin = b;
-            img.Product = await _repository.Product.GetByAsync(p => p.ProductId.Equals("501b3b6d-eeb0-4b07-a9ac-e312e08bddeb"));
-
-            await _repository.Image.UpdateAsync(img);
-            await _repository.SaveAsync();
-
             return Ok(new Response { Status = "Success", Message = "Product updated successfully!" });
         }
     }

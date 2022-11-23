@@ -6,5 +6,7 @@ namespace EcommerceWeb.API.Repositories.Interfaces
     public interface IProductRepository : IGenericRepository<Product>
     {
         Task<IEnumerable<Product>> GetAllProductsAsync();
+        Task<Product> GetOneProductsAsync(Guid productId);
+
     }
 }

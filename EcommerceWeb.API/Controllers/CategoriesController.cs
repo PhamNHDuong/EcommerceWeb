@@ -24,27 +24,29 @@ namespace EcommerceWeb.API.Controllers
         }
 
         [HttpGet]
-        [Route("Test")]
-        public async Task<ActionResult> GetAllCategories()
+        public async Task<ActionResult<IEnumerable<CategoryDto>>> GetAllCategories()
         {
             var data = await _repository.Category.GetAll().ToListAsync();
-            return Ok(data);
-        }
-
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<CategoryDto>>> GetCategories()
-        {
-            var data = await _repository.Category.GetMany(c => c.IsDeleted == false).ToListAsync();
             var categories = _mapper.Map<List<CategoryDto>>(data);
 
             return categories;
         }
 
         [HttpGet]
-        [Route("{id}")]
-        public async Task<ActionResult<CategoryDto>> GetCategoryById(Guid id)
+        [Route("available")]
+        public async Task<ActionResult<IEnumerable<CategoryListDto>>> GetAvailableCategories()
         {
-            var data = await _repository.Category.GetByAsync(u => u.CategoryId == id);
+            var data = await _repository.Category.GetMany(c => c.IsDeleted == false).ToListAsync();
+            var categories = _mapper.Map<List<CategoryListDto>>(data);
+
+            return categories;
+        }
+
+        [HttpGet]
+        [Route("{id}")]
+        public async Task<ActionResult<CategoryDto>> GetCategoryById(string id)
+        {
+            var data = await _repository.Category.GetByAsync(u => u.CategoryId == Guid.Parse(id));
             if (data == null)
             {
                 return NotFound();
@@ -55,12 +57,13 @@ namespace EcommerceWeb.API.Controllers
 
         [HttpPost]
         [Route("create")]
-        public async Task<IActionResult> CreateCategory(string categoryName)
+        public async Task<IActionResult> CreateCategory([FromForm] CategoryCreateDto newCategory)
         {
             Category data = new Category()
             {
                 CategoryId = Guid.NewGuid(),
-                Name = categoryName
+                Name = newCategory.Name,
+                Description = newCategory.Description
             };
             if (_repository.Category.InsertAsync(data).IsCanceled)
                 return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "Category creation failed! Please check name and try again." });
@@ -69,7 +72,7 @@ namespace EcommerceWeb.API.Controllers
         }
 
         [HttpPut("update")]
-        public async Task<ActionResult<CategoryDto>> UpdateCategory(Guid id, [FromBody] string nameUpdate)
+        public async Task<ActionResult<CategoryDto>> UpdateCategory(Guid id, [FromBody] CategoryEditDto editedCategory)
         {
             var data = _repository.Category.GetByAsync(u => u.CategoryId == id);
             if (data.Result == null)
@@ -79,7 +82,8 @@ namespace EcommerceWeb.API.Controllers
 
             Category category = data.Result;
 
-            category.Name = nameUpdate;
+            category.Name = editedCategory.Name;
+            category.Description = editedCategory.Description;
 
             await _repository.Category.UpdateAsync(category);
             await _repository.SaveAsync();
@@ -87,17 +91,16 @@ namespace EcommerceWeb.API.Controllers
             return Ok(new Response { Status = "Success", Message = "Category updated successfully!" });
         }
 
-        [HttpPatch("show")]
-        public async Task<ActionResult<CategoryDto>> ShowCategory(Guid id)
+        [HttpPatch("enable")]
+        public async Task<ActionResult<CategoryDto>> ShowCategory(string id)
         {
-            var data = _repository.Category.GetByAsync(u => u.CategoryId == id);
+            var data = _repository.Category.GetByAsync(u => u.CategoryId == Guid.Parse(id));
             if (data.Result == null)
             {
                 return NotFound();
             }
 
             Category category = data.Result;
-
             category.IsDeleted = false;
 
             await _repository.Category.UpdateAsync(category);
@@ -106,10 +109,10 @@ namespace EcommerceWeb.API.Controllers
             return Ok(new Response { Status = "Success", Message = "Category showed successfully!" });
         }
 
-        [HttpPatch("delete")]
-        public async Task<ActionResult<CategoryDto>> DeleteCategory(Guid id)
+        [HttpPatch("disable")]
+        public async Task<ActionResult<CategoryDto>> DeleteCategory(string id)
         {
-            var data = _repository.Category.GetByAsync(u => u.CategoryId == id);
+            var data = _repository.Category.GetByAsync(u => u.CategoryId == Guid.Parse(id));
             if (data.Result == null)
             {
                 return NotFound();

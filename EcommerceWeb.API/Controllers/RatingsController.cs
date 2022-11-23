@@ -67,7 +67,7 @@ namespace EcommerceWeb.API.Controllers
         [Route("getAll")]
         public async Task<List<RatingDto>> GetAll()
         {
-            var result = await _repository.Rating.GetAll().ToListAsync();
+            var result = await _repository.Rating.GetAllRatingsAsync();
             return _mapper.Map<List<RatingDto>>(result);
         }
 

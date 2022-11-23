@@ -17,16 +17,12 @@ namespace EcommerceWeb.API.Controllers
     [ApiController]
     public class UsersController : ControllerBase
     {
-        //private readonly UserManager<User> _userManager;
-        //private readonly RoleManager<IdentityRole> _roleManager;
         private readonly IConfiguration _configuration;
         private readonly IRepositoryWrapper _repository;
         private readonly IMapper _mapper;
 
-        public UsersController(/*UserManager<User> userManager, RoleManager<IdentityRole> roleManager, */IConfiguration configuration, IRepositoryWrapper repository, IMapper mapper)
+        public UsersController(IConfiguration configuration, IRepositoryWrapper repository, IMapper mapper)
         {
-            //_userManager = userManager;
-            //_roleManager = roleManager;
             _configuration = configuration;
             _repository = repository;
             _mapper = mapper;
@@ -57,37 +53,12 @@ namespace EcommerceWeb.API.Controllers
             var convertData = _mapper.Map<IEnumerable<UserDto>>(data);
             return Ok(convertData);
         }
+
         [HttpPost]
         [Route("login")]
         public async Task<IActionResult> Login([FromBody] LoginModel model)
         {
-            /*
-            var user = await _userManager.FindByNameAsync(model.Username);
-            if (user != null && await _userManager.CheckPasswordAsync(user, model.Password))
-            {
-                var userRoles = await _userManager.GetRolesAsync(user);
-                var authClaims = new List<Claim>
-                {
-                    new Claim(ClaimTypes.Name, user.UserName),
-                    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                };
-
-                foreach (var userRole in userRoles)
-                {
-                    authClaims.Add(new Claim(ClaimTypes.Role, userRole));
-                }
-
-                var token = GetToken(authClaims);
-
-                return Ok(new Token
-                {
-                    TokenString = new JwtSecurityTokenHandler().WriteToken(token),
-                    Expiration = token.ValidTo,
-                    UserInfo = new UserDTO { Id = user.Id.ToString(), Roles = (List<string>)userRoles, UserName = user.UserName },
-                });
-            }
-            */
-            var user = await _repository.User.GetByAsync(u => u.UserName == model.Username);
+            var user = await _repository.User.GetByAsync(u => u.UserName == model.Username && u.IsDeleted == false);
             if (user != null && user.Password == model.Password)
             {
                 var authClaims = new List<Claim>
@@ -95,6 +66,7 @@ namespace EcommerceWeb.API.Controllers
                         new Claim(ClaimTypes.Name, user.UserName),
                         new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                     };
+                authClaims.Add(new Claim(ClaimTypes.Role, user.Role));
                 var token = GetToken(authClaims);
 
                 return Ok(new Token
@@ -114,21 +86,6 @@ namespace EcommerceWeb.API.Controllers
             var userExists = await _repository.User.GetByAsync(u => u.UserName == model.Username);
             if (userExists != null)
                 return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "User already exists!" });
-            /*
-            User user = new()
-            {
-                Email = model.Email,
-                SecurityStamp = Guid.NewGuid().ToString(),
-                UserName = model.Username
-            };
-            var result = await _userManager.CreateAsync(user, model.Password);
-            bool customerRoleExits = await _roleManager.RoleExistsAsync(UserRoles.Customer);
-            if (!customerRoleExits)
-            {
-                await _roleManager.CreateAsync(new IdentityRole(UserRoles.Customer));
-            }
-            await _userManager.AddToRoleAsync(user, UserRoles.Customer);
-            */
             AUser user = new AUser()
             {
                 AUserId = Guid.NewGuid(),
@@ -145,37 +102,10 @@ namespace EcommerceWeb.API.Controllers
         }
 
         [HttpPost]
-        [Route("register-admin")]
+        [Route("admin-register")]
         public async Task<IActionResult> RegisterAdmin([FromBody] RegisterModel model)
         {
-            //var userExists = await _userManager.FindByNameAsync(model.Username);
-            //if (userExists != null)
-            //    return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "User already exists!" });
-
-            //User user = new()
-            //{
-            //    Email = model.Email,
-            //    SecurityStamp = Guid.NewGuid().ToString(),
-            //    UserName = model.Username
-            //};
-            //var result = await _userManager.CreateAsync(user, model.Password);
-            //if (!result.Succeeded)
-            //    return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "User creation failed! Please check user details and try again." });
-
-            //if (!await _roleManager.RoleExistsAsync(UserRoles.Admin))
-            //    await _roleManager.CreateAsync(new IdentityRole(UserRoles.Admin));
-            //if (!await _roleManager.RoleExistsAsync(UserRoles.Customer))
-            //    await _roleManager.CreateAsync(new IdentityRole(UserRoles.Customer));
-
-            //if (await _roleManager.RoleExistsAsync(UserRoles.Admin))
-            //{
-            //    await _userManager.AddToRoleAsync(user, UserRoles.Admin);
-            //}
-            //if (await _roleManager.RoleExistsAsync(UserRoles.Admin))
-            //{
-            //    await _userManager.AddToRoleAsync(user, UserRoles.Customer);
-            //}
-            return Ok(new Response { Status = "Success", Message = "User updated successfully!" });
+            return Ok(new Response { Status = "Success", Message = "User registered successfully!" });
         }
 
         [HttpPut("update")]
@@ -198,7 +128,7 @@ namespace EcommerceWeb.API.Controllers
             return Ok(new Response { Status = "Success", Message = "User deleted successfully!" });
         }
 
-        [HttpPatch("show")]
+        [HttpPatch("enable")]
         public async Task<ActionResult<UserDto>> ShowUser(Guid id)
         {
             var data = _repository.User.GetByAsync(u => u.AUserId == id);
@@ -217,7 +147,7 @@ namespace EcommerceWeb.API.Controllers
             return Ok(new Response { Status = "Success", Message = "User showed successfully!" });
         }
 
-        [HttpPatch("delete")]
+        [HttpPatch("disable")]
         public async Task<ActionResult<UserDto>> DeleteUser(Guid id)
         {
             var data = _repository.User.GetByAsync(u => u.AUserId == id);

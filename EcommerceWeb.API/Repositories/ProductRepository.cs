@@ -13,9 +13,17 @@ namespace EcommerceWeb.API.Repositories
         public async Task<IEnumerable<Product>> GetAllProductsAsync()
         {
             return await GetAll()
-               .OrderBy(p=> p.Name)
+               .Include(p => p.Category)
+               .OrderBy(p => p.Name)
                .ToListAsync();
         }
 
+        public async Task<Product> GetOneProductsAsync(Guid productId)
+        {
+            return await GetAll()
+                .Include(p => p.Category)
+                .Where(p => p.ProductId == productId)
+                .FirstOrDefaultAsync();
+        }
     }
 }
